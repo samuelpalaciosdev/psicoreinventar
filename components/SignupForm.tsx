@@ -165,7 +165,9 @@ export default function SignupForm() {
                 </FormItem>
               )}
             />
-            <Button type='submit'>Submit</Button>
+            <Button disabled={isSubmitting} type='submit'>
+              Submit
+            </Button>
           </form>
         </Form>
       </CardContent>
