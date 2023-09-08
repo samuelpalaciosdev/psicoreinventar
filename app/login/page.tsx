@@ -1,10 +1,10 @@
-import SignupForm from '@/components/SignupForm';
+import LoginForm from '@/components/LoginForm';
 
-export default function Home() {
+export default function LoginPage() {
   return (
     <main className=''>
       <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-        <SignupForm />
+        <LoginForm />
       </div>
     </main>
   );
