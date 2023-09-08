@@ -21,13 +21,17 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-// import { useRouter } from 'next/navigation';
 import { signUpSchema, signUpType } from '@/lib/validations/auth';
 import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function SignupForm() {
   const router = useRouter();
+
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
 
   const form = useForm<signUpType>({
     resolver: zodResolver(signUpSchema),
@@ -106,7 +110,39 @@ export default function SignupForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* <Form  */}
+        {/* Add two buttons one for continue with email and it so this form will be displayed, if not then continue with google*/}
+
+        <div className='flex flex-col gap-6'>
+          <Button className='w-full gap-2'>Sign Up with Email</Button>
+          <div className='relative'>
+            <div className='absolute inset-0 flex items-center'>
+              <span className='w-full border-t' />
+            </div>
+            <div className='relative flex justify-center text-xs uppercase'>
+              <span className='bg-background px-2 text-muted-foreground'>
+                Or continue with
+              </span>
+            </div>
+          </div>
+          <Button
+            type='button'
+            variant='outline'
+            className='gap-2'
+            onClick={() => {
+              setIsGoogleLoading(true);
+            }}
+          >
+            {isGoogleLoading ? (
+              <Loader2 className='animate-spin h-5 w-5' />
+            ) : (
+              <FcGoogle className='h-5 w-5' />
+            )}
+            {''}
+            Google
+          </Button>
+        </div>
+
+        {/*        
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
             <FormField
@@ -169,7 +205,7 @@ export default function SignupForm() {
               Submit
             </Button>
           </form>
-        </Form>
+        </Form> */}
       </CardContent>
     </Card>
   );
