@@ -67,7 +67,7 @@ export default function SignupForm() {
       // return;
     } else {
       console.log('Successfully registered');
-      router.push('/sign-in');
+      router.push('/login');
     }
 
     if (resData.errors) {
@@ -100,7 +100,7 @@ export default function SignupForm() {
         <CardTitle>Sign up</CardTitle>
         <CardDescription>
           Already have an account?{' '}
-          <Link href={'/sign-in'} className='text-blue-500 font-medium'>
+          <Link href={'/login'} className='text-blue-500 font-medium'>
             Sign in
           </Link>
         </CardDescription>

@@ -26,6 +26,7 @@ import { loginSchema, loginType } from '@/lib/validations/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useState } from 'react';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -43,6 +44,8 @@ export default function LoginForm() {
     setError,
   } = form;
 
+  const [credentialsError, setCredentialsError] = useState('');
+
   const onSubmit = async (data: loginType) => {
     const signInData = await signIn('credentials', {
       email: data.email,
@@ -50,8 +53,11 @@ export default function LoginForm() {
       redirect: false,
     });
 
+    setCredentialsError('');
+
     if (signInData?.error) {
-      console.log(signInData.error);
+      setCredentialsError('Invalid credentials');
+      // console.log(signInData.error);
     } else {
       router.push('/admin');
     }
@@ -101,6 +107,11 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
+            {credentialsError && (
+              <p className='text-destructive text-sm mt-0'>
+                {credentialsError}
+              </p>
+            )}
             <Button disabled={isSubmitting} type='submit'>
               Submit
             </Button>
