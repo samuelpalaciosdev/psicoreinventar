@@ -1,4 +1,4 @@
-import { PrismaAdapter } from '@auth/prisma-adapter';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { NextAuthOptions, getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from './db';
@@ -61,6 +61,23 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    //* Adding role to JWT token
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+
+      return token;
+    },
+    //* Adding role to session
+    async session({ session, token }) {
+      if (token) {
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
 };
 
