@@ -190,7 +190,7 @@ export default function SignupForm() {
             <Form {...form}>
               <motion.form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className='space-y-8'
+                className='space-y-6'
                 key='form'
                 initial='hidden'
                 animate='visible'
