@@ -28,11 +28,13 @@ import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import SignUpOptionsCard from './sign-up-options-card';
 
 export default function SignupForm() {
   const router = useRouter();
 
-  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<boolean>(false);
 
   const form = useForm<signUpType>({
     resolver: zodResolver(signUpSchema),
@@ -99,118 +101,132 @@ export default function SignupForm() {
     }
   };
 
+  const formVariants = {
+    hidden: { opacity: 0, x: 0, y: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        type: 'spring',
+      },
+      y: 0,
+      x: 0,
+    },
+  };
+
   return (
-    <Card className='w-[24rem]'>
-      <CardHeader>
-        <CardTitle>Sign up</CardTitle>
-        <CardDescription>
-          Already have an account?{' '}
-          <Link href={'/login'} className='text-blue-500 font-medium'>
-            Sign in
-          </Link>
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Add two buttons one for continue with email and it so this form will be displayed, if not then continue with google*/}
+    <>
+      {!showForm && (
+        <SignUpOptionsCard showForm={showForm} setShowForm={setShowForm} />
+      )}
 
-        <div className='flex flex-col gap-6'>
-          <Button type='button' className='w-full'>
-            Sign Up with Email
-          </Button>
-          <div className='relative'>
-            <div className='absolute inset-0 flex items-center'>
-              <span className='w-full border-t' />
-            </div>
-            <div className='relative flex justify-center text-xs uppercase'>
-              <span className='bg-background px-2 text-muted-foreground'>
-                Or continue with
-              </span>
-            </div>
-          </div>
-          <Button
-            type='button'
-            variant='outline'
-            disabled={isGoogleLoading}
-            className='gap-2'
-            onClick={() => {
-              setIsGoogleLoading(true);
-              signIn('google', { callbackUrl: '/admin' });
-            }}
-          >
-            {isGoogleLoading ? (
-              <Loader2 className='animate-spin h-5 w-5' />
-            ) : (
-              <FcGoogle className='h-5 w-5' />
-            )}
-            {''}
-            Google
-          </Button>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='John Doe' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+      {showForm && (
+        <Card className='w-[24rem]'>
+          <CardHeader>
+            <CardTitle>Sign up</CardTitle>
+            <CardDescription>
+              Already have an account?{' '}
+              <Link href={'/login'} className='text-blue-500 font-medium'>
+                Sign in
+              </Link>
+              {showForm && (
+                <div>
+                  <span
+                    onClick={() => {
+                      setShowForm(!showForm);
+                    }}
+                    className='text-blue-500 font-medium underline hover:cursor-pointer'
+                  >
+                    {' '}
+                    Sign up with google?
+                  </span>
+                </div>
               )}
-            />
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type='email'
-                      placeholder='jdoe@gmail.com'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type='password' placeholder='********' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='confirmPassword'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input type='password' placeholder='********' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button disabled={isSubmitting} type='submit'>
-              Submit
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <motion.form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className='space-y-8'
+                key='form'
+                initial='hidden'
+                animate='visible'
+                exit='hidden'
+                variants={formVariants}
+              >
+                <FormField
+                  control={form.control}
+                  name='name'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full name</FormLabel>
+                      <FormControl>
+                        <Input placeholder='John Doe' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='email'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='email'
+                          placeholder='jdoe@gmail.com'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='password'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='password'
+                          placeholder='********'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='confirmPassword'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='password'
+                          placeholder='********'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button disabled={isSubmitting} type='submit'>
+                  Submit
+                </Button>
+              </motion.form>
+            </Form>
+          </CardContent>
+        </Card>
+      )}
+    </>
   );
 }
