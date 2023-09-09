@@ -50,10 +50,14 @@ export async function POST(req: Request, res: Response) {
     const validatedData = signUpSchema.safeParse(body);
 
     if (validatedData.success) {
+      //* Generate user image
+      const userImg = `https://ui-avatars.com/api/?name=${validatedData.data.name}&background=random`;
+
       const user = await prisma.user.create({
         data: {
           name: validatedData.data.name,
           email: validatedData.data.email,
+          image: userImg,
           password: hashedPassword,
           role,
         },
