@@ -27,6 +27,7 @@ import { Loader2 } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 
 export default function SignupForm() {
   const router = useRouter();
@@ -127,9 +128,11 @@ export default function SignupForm() {
           <Button
             type='button'
             variant='outline'
+            disabled={isGoogleLoading}
             className='gap-2'
             onClick={() => {
               setIsGoogleLoading(true);
+              signIn('google');
             }}
           >
             {isGoogleLoading ? (
