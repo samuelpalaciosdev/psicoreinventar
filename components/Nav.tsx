@@ -1,7 +1,13 @@
+'use client';
+
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { buttonVariants } from './ui/button';
+import UserDropdown from './user-dropdown';
 
 export default function Nav() {
+  const { data: session, status } = useSession();
+  console.log(session);
   return (
     <header className='sticky top-0 inset-x-0 h-fit py-4 border-b bg-white dark:bg-gray-950 z-[10]'>
       <div className='container max-w-7xl flex items-center justify-between gap-2'>
@@ -32,9 +38,14 @@ export default function Nav() {
           </nav>
         </div>
         <div className='flex items-center'>
-          <Link href={'/login'} className={buttonVariants()}>
-            Login
-          </Link>
+          {/* Theme toggle */}
+          {session?.user ? (
+            <UserDropdown user={session.user} />
+          ) : (
+            <Link href={'/login'} className={buttonVariants()}>
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </header>

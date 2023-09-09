@@ -51,7 +51,7 @@ export async function POST(req: Request, res: Response) {
 
     if (validatedData.success) {
       //* Generate user image
-      const userImg = `https://ui-avatars.com/api/?name=${validatedData.data.name}&background=random`;
+      const userImg = `https://source.boringavatars.com/marble/80/${validatedData.data.name}?colors=fdf4b0,a4dcb9,5bcebf,32b9be,2e97b7`;
 
       const user = await prisma.user.create({
         data: {
