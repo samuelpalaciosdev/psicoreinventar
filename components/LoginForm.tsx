@@ -24,12 +24,16 @@ import { useForm } from 'react-hook-form';
 // import { useRouter } from 'next/navigation';
 import { loginSchema, loginType } from '@/lib/validations/auth';
 import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 
 export default function LoginForm() {
   const router = useRouter();
+
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
 
   const form = useForm<loginType>({
     resolver: zodResolver(loginSchema),
@@ -112,9 +116,40 @@ export default function LoginForm() {
                 {credentialsError}
               </p>
             )}
-            <Button disabled={isSubmitting} type='submit'>
-              Submit
-            </Button>
+
+            <div className='flex flex-col gap-6'>
+              <Button disabled={isSubmitting} type='submit' className='w-full'>
+                Sign in with email
+              </Button>
+              <div className='relative'>
+                <div className='absolute inset-0 flex items-center'>
+                  <span className='w-full border-t' />
+                </div>
+                <div className='relative flex justify-center text-xs uppercase'>
+                  <span className='bg-background px-2 text-muted-foreground'>
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+              <Button
+                type='button'
+                variant='outline'
+                disabled={isGoogleLoading}
+                className='gap-2'
+                onClick={() => {
+                  setIsGoogleLoading(true);
+                  signIn('google', { callbackUrl: '/admin' });
+                }}
+              >
+                {isGoogleLoading ? (
+                  <Loader2 className='animate-spin h-5 w-5' />
+                ) : (
+                  <FcGoogle className='h-5 w-5' />
+                )}
+                {''}
+                Google
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

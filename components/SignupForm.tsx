@@ -114,7 +114,9 @@ export default function SignupForm() {
         {/* Add two buttons one for continue with email and it so this form will be displayed, if not then continue with google*/}
 
         <div className='flex flex-col gap-6'>
-          <Button className='w-full gap-2'>Sign Up with Email</Button>
+          <Button type='button' className='w-full'>
+            Sign Up with Email
+          </Button>
           <div className='relative'>
             <div className='absolute inset-0 flex items-center'>
               <span className='w-full border-t' />
@@ -132,7 +134,7 @@ export default function SignupForm() {
             className='gap-2'
             onClick={() => {
               setIsGoogleLoading(true);
-              signIn('google');
+              signIn('google', { callbackUrl: '/admin' });
             }}
           >
             {isGoogleLoading ? (
@@ -145,7 +147,6 @@ export default function SignupForm() {
           </Button>
         </div>
 
-        {/*        
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
             <FormField
@@ -208,7 +209,7 @@ export default function SignupForm() {
               Submit
             </Button>
           </form>
-        </Form> */}
+        </Form>
       </CardContent>
     </Card>
   );

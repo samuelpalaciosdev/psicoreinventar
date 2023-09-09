@@ -1,7 +1,12 @@
-import { getAuthSession } from '@/lib/auth';
+import { authOptions } from '@/lib/auth';
+import { getServerSession } from 'next-auth';
 
 export default async function AdminDashboard() {
-  const session = await getAuthSession();
+  {
+    /* //! If no session redirect to login */
+  }
+  const session = await getServerSession(authOptions);
+  console.log(session);
 
   return (
     <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
