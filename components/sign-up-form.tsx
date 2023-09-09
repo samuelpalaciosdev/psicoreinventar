@@ -29,7 +29,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import SignUpOptionsCard from './sign-up-options-card';
 
 export default function SignupForm() {
   const router = useRouter();
@@ -114,36 +113,79 @@ export default function SignupForm() {
     },
   };
 
-  return (
-    <>
-      {!showForm && (
-        <SignUpOptionsCard showForm={showForm} setShowForm={setShowForm} />
-      )}
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
 
-      {showForm && (
-        <Card className='w-[24rem]'>
-          <CardHeader>
-            <CardTitle>Sign up</CardTitle>
-            <CardDescription>
-              Already have an account?{' '}
-              <Link href={'/login'} className='text-blue-500 font-medium'>
-                Sign in
-              </Link>
-              {showForm && (
-                <div>
-                  <span
-                    onClick={() => {
-                      setShowForm(!showForm);
-                    }}
-                    className='text-blue-500 font-medium underline hover:cursor-pointer'
-                  >
-                    {' '}
-                    Sign up with google?
+  return (
+    <Card className='w-[24rem]'>
+      <CardHeader>
+        <CardTitle>Sign up</CardTitle>
+        <CardDescription>
+          Already have an account?{' '}
+          <Link href={'/login'} className='text-blue-500 font-medium'>
+            Sign in
+          </Link>
+          {showForm && (
+            <div>
+              <span
+                onClick={() => {
+                  setShowForm(!showForm);
+                }}
+                className='text-blue-500 font-medium hover:cursor-pointer'
+              >
+                {' '}
+                Sign up with google?
+              </span>
+            </div>
+          )}
+        </CardDescription>
+      </CardHeader>
+      {/* Renders  */}
+      {!showForm ? (
+        <CardContent>
+          {!showForm && (
+            <motion.div className='flex flex-col gap-6' key='buttons'>
+              <Button
+                type='button'
+                className='w-full'
+                onClick={() => {
+                  setShowForm(true);
+                }}
+              >
+                Sign Up with Email
+              </Button>
+              <div className='relative'>
+                <div className='absolute inset-0 flex items-center'>
+                  <span className='w-full border-t' />
+                </div>
+                <div className='relative flex justify-center text-xs uppercase'>
+                  <span className='bg-background px-2 text-muted-foreground'>
+                    Or continue with
                   </span>
                 </div>
-              )}
-            </CardDescription>
-          </CardHeader>
+              </div>
+              <Button
+                type='button'
+                variant='outline'
+                disabled={isGoogleLoading}
+                className='gap-2'
+                onClick={() => {
+                  setIsGoogleLoading(true);
+                  signIn('google', { callbackUrl: '/admin' });
+                }}
+              >
+                {isGoogleLoading ? (
+                  <Loader2 className='animate-spin h-5 w-5' />
+                ) : (
+                  <FcGoogle className='h-5 w-5' />
+                )}
+                {''}
+                Google
+              </Button>
+            </motion.div>
+          )}
+        </CardContent>
+      ) : (
+        <AnimatePresence>
           <CardContent>
             <Form {...form}>
               <motion.form
@@ -225,8 +267,8 @@ export default function SignupForm() {
               </motion.form>
             </Form>
           </CardContent>
-        </Card>
+        </AnimatePresence>
       )}
-    </>
+    </Card>
   );
 }
