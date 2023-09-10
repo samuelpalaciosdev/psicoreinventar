@@ -125,17 +125,15 @@ export default function SignupForm() {
             Sign in
           </Link>
           {showForm && (
-            <div>
-              <span
-                onClick={() => {
-                  setShowForm(!showForm);
-                }}
-                className='text-blue-500 font-medium hover:cursor-pointer'
-              >
-                {' '}
-                Sign up with google?
-              </span>
-            </div>
+            <p
+              onClick={() => {
+                setShowForm(!showForm);
+              }}
+              className='inline-block text-blue-500 font-medium hover:cursor-pointer'
+            >
+              {' '}
+              Sign up with google?
+            </p>
           )}
         </CardDescription>
       </CardHeader>
