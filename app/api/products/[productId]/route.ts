@@ -83,6 +83,14 @@ export async function PATCH(
         product: params.productId as string,
       });
 
+      // Change default_price to the new price and archive the old one
+      const updateProductPrice = await stripe.products.update(
+        params.productId,
+        {
+          default_price: newPrice.id,
+        }
+      );
+
       const achieveOldPrice = await stripe.prices.update(
         updatedStripeProduct.default_price as string,
         {
