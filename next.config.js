@@ -3,8 +3,8 @@ const nextConfig = {
   images: {
     domains: [
       'lh3.googleusercontent.com',
-      'ui-avatars.com',
       'source.boringavatars.com',
+      'files.stripe.com',
     ],
   },
 };
