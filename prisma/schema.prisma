@@ -64,6 +64,16 @@ model User {
   sessions             Session[]
 }
 
+model Product {
+  id              String  @id
+  name            String
+  description     String
+  price           Int
+  image           String
+  time            Int
+  stripeProductId String?
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
