@@ -52,8 +52,14 @@ model User {
   image                String?
   role                 Role      @default(patient)
   isActive             Boolean   @default(true)
+  phone                String?   @unique
   stripeCustomerId     String?   @unique
   stripeSubscriptionId String?
+  // doctor role
+  doctorExperience     String?
+  doctorSpecialty      String?
+  doctorEducation      String?
+  // Relationships
   accounts             Account[]
   sessions             Session[]
 }
