@@ -2,27 +2,7 @@ import prisma from '@/lib/db';
 import { stripe } from '@/lib/stripe';
 import { productSchema } from '@/lib/validations/product';
 import { NextResponse } from 'next/server';
-
-//* Get products on stripe with their prices
-export async function GET(req: Request, res: Response) {
-  try {
-    const products = await stripe.products.list({
-      expand: ['data.default_price'],
-    });
-
-    return NextResponse.json(products.data, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: 'Something went wrong',
-        error: error,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-}
+import { ZodError } from 'zod';
 
 //* Create product on stripe and db
 export async function POST(req: Request, res: Response) {
@@ -55,6 +35,9 @@ export async function POST(req: Request, res: Response) {
         default_price_data: {
           currency: 'usd',
           unit_amount: validatedData.data.price * 100, // In cents
+        },
+        metadata: {
+          time: validatedData.data.time, //* Add time of the session to the metadata
         },
       });
 

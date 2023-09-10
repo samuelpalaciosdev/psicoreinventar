@@ -70,7 +70,8 @@ model Product {
   description     String
   price           Int
   image           String
-  time            Int
+  time            String
+  active          Boolean @default(true)
   stripeProductId String?
 }
 
