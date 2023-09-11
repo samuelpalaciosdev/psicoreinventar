@@ -10,6 +10,9 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  pages: {
+    signIn: '/login',
+  },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -42,10 +45,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password!
-        );
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password!);
 
         if (!isPasswordValid) {
           return null;

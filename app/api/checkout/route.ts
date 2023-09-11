@@ -1,8 +1,22 @@
 import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
+import { getAuthSession } from '@/lib/auth';
 
 export async function POST(req: Request, res: Response) {
   try {
+    const session = await getAuthSession();
+
+    if (!session?.user) {
+      return NextResponse.json(
+        {
+          message: 'You must be logged in to access this route',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
     const body = await req.json();
 
     const { priceId } = body;
@@ -12,20 +26,24 @@ export async function POST(req: Request, res: Response) {
     }
 
     // Create a Checkout Session.
-    const session = await stripe.checkout.sessions.create({
+    const stripeSession = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
+      customer_email: session.user.email as string,
+      metadata: {
+        userId: session.user.id, //! This should be the stripeCustomerId
+      },
       success_url: `http://localhost:3000/success`,
       cancel_url: `http://localhost:3000`,
     });
 
-    console.log(session);
+    // console.log(stripeSession);
 
     return NextResponse.json(
       {
         message: 'Checkout created',
-        url: session.url,
+        url: stripeSession.url,
       },
       {
         status: 201,
