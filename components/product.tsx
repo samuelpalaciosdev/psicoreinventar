@@ -1,27 +1,16 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from './ui/card';
-
-type ProductProps = {
-  id: string;
-  name: string;
-  description: string | null;
-  image: string;
-  default_price: number | null;
-  time: string;
-};
+import { ProductType } from '@/types/product-type';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import formatPrice from '@/utilities/format-price';
 
 export default function Product({
+  id,
   name,
   description,
+  unit_amount,
   image,
-  default_price,
+  currency,
   time,
-}: ProductProps) {
+}: ProductType) {
   return (
     <Card className='w-[18rem]'>
       <CardHeader>
@@ -29,7 +18,9 @@ export default function Product({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        {/* <p className='font-semibold text-primary'>{default_price}</p> */}
+        <p className='font-semibold text-primary'>
+          {unit_amount !== null ? formatPrice(unit_amount) : 'N/A'}
+        </p>
         <p className='text-sm text-gray-500'>{time}</p>
       </CardContent>
     </Card>

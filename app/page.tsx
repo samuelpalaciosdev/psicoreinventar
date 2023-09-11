@@ -16,26 +16,11 @@ export default async function Home() {
         </Link>
       </div>
       <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-        {/* Stripe does not provide types for extended api responses, so have to do this */}
-        {products.map((product) => {
-          let unitAmount: number | null | undefined;
-
-          if (typeof product.default_price === 'object') {
-            unitAmount = product.default_price?.unit_amount;
-          }
-
-          return (
-            <Product
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              description={product.description}
-              image={product.images[0]}
-              default_price={unitAmount as number}
-              time={product.metadata.time}
-            />
-          );
-        })}
+        <div className='flex gap-4 items-center justify-center'>
+          {products.map((product) => (
+            <Product key={product.id} {...product} />
+          ))}
+        </div>
       </div>
     </main>
   );
