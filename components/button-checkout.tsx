@@ -1,12 +1,19 @@
 'use client';
+import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface ButtonCheckoutProps extends React.HTMLAttributes<HTMLButtonElement> {
   priceId: string;
 }
 
 export default function ButtonCheckout({ className, priceId, ...props }: ButtonCheckoutProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const createCheckout = async () => {
+    setIsLoading(!isLoading);
+
     const response = await fetch('/api/checkout', {
       method: 'POST',
       headers: {
@@ -21,7 +28,8 @@ export default function ButtonCheckout({ className, priceId, ...props }: ButtonC
 
   return (
     <Button
-      className={className}
+      className={cn(className, 'w-full')}
+      disabled={isLoading}
       onClick={() => {
         console.log(priceId);
         createCheckout();
@@ -29,6 +37,7 @@ export default function ButtonCheckout({ className, priceId, ...props }: ButtonC
       {...props}
     >
       Make an appointment
+      {isLoading && <Loader2 className='ml-2 h-5 w-5 animate-spin' />}
     </Button>
   );
 }
