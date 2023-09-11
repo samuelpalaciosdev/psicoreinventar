@@ -28,13 +28,16 @@ export async function POST(req: Request, res: Response) {
 
     //* If data is valid, create stripe product
     if (validatedData.success) {
+      const priceInCents = validatedData.data.price * 100; //* Convert price to cents
+      const productPrice = Math.round(Number(priceInCents.toFixed(2))); //* Round to 2 decimals
+
       const product = await stripe.products.create({
         name: validatedData.data.name,
         description: validatedData.data.description,
         images: [validatedData.data.image],
         default_price_data: {
           currency: 'usd',
-          unit_amount: validatedData.data.price * 100, // In cents
+          unit_amount: productPrice, // In cents
         },
         metadata: {
           time: validatedData.data.time, //* Add time of the session to the metadata
