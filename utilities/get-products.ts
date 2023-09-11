@@ -15,6 +15,7 @@ export default async function getProducts() {
         id: product.id,
         name: product.name,
         description: product.description,
+        default_price: product.default_price,
         unit_amount: prices.data[0].unit_amount,
         image: product.images[0],
         currency: prices.data[0].currency,

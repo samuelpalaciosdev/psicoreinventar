@@ -4,7 +4,7 @@ import Product from '@/components/product';
 
 export default async function Home() {
   const products = await getProducts();
-  console.log(products);
+  // console.log(products);
   return (
     <main className=''>
       <div className='flex items-center justify-center gap-4'>
@@ -16,7 +16,7 @@ export default async function Home() {
         </Link>
       </div>
       <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-        <div className='flex gap-4 items-center justify-center'>
+        <div className='flex gap-6 items-center justify-center'>
           {products.map((product) => (
             <Product key={product.id} {...product} />
           ))}
