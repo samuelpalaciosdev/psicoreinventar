@@ -14,6 +14,7 @@ export async function GET(req: Request, res: Response) {
         email: true,
         image: true,
         phone: true,
+        role: true,
         doctorExperience: true,
         doctorSpecialty: true,
         doctorEducation: true,

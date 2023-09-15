@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import ButtonSelectDoctor from './button-select-doctor';
+import DialogSelectDoctor from './dialog-select-doctor';
 
 type DoctorCardProps = {
   id: string;
@@ -32,7 +32,9 @@ export default function DoctorCard({
       <CardContent className='flex flex-col gap-2'>
         <p className='text-muted-foreground text-sm'>{doctorExperience}</p>
         <p className='text-muted-foreground text-sm'>{doctorEducation}</p>
-        <ButtonSelectDoctor doctorId={id} className='self-start' />
+        <div className='flex'>
+          <DialogSelectDoctor doctorId={id} doctorName={name} />
+        </div>
       </CardContent>
     </Card>
   );
