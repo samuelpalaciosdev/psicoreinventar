@@ -6,16 +6,23 @@ interface AppointmentState {
   doctorSelected: string;
   selectedDateTime: string;
   patientSelected: string;
-  setDoctorSelected: (doctor: string) => void;
-  setSelectedDateTime: (date: string) => void;
-  setPatientSelected: (patient: string) => void;
+  setDoctor: (doctor: string) => void;
+  setDateTime: (date: string) => void;
+  setPatient: (patient: string) => void;
 }
 
-export const useAppointmentStore = create<AppointmentState>()((set) => ({
-  doctorSelected: '',
-  selectedDateTime: '',
-  patientSelected: '',
-  setDoctorSelected: (doctor) => set((state) => ({ doctorSelected: doctor })),
-  setSelectedDateTime: (date) => set((state) => ({ selectedDateTime: date })),
-  setPatientSelected: (patient) => set((state) => ({ patientSelected: patient })),
-}));
+export const useAppointmentStore = create(
+  persist<AppointmentState>(
+    (set) => ({
+      doctorSelected: '',
+      selectedDateTime: '',
+      patientSelected: '',
+      setDoctor: (doctor: string) => set((state) => ({ doctorSelected: doctor })),
+      setDateTime: (date: string) => set((state) => ({ selectedDateTime: date })),
+      setPatient: (patient: string) => set((state) => ({ patientSelected: patient })),
+    }),
+    {
+      name: 'appointment-storage',
+    }
+  )
+);

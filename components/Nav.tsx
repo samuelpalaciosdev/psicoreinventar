@@ -30,7 +30,7 @@ export default function Nav() {
               Services
             </Link>
             <Link
-              href={'/psychologists'}
+              href={'/specialists'}
               className='text-foreground/70 transition-colors hover:text-foreground/90'
             >
               Specialists

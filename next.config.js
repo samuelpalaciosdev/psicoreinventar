@@ -5,6 +5,7 @@ const nextConfig = {
       'lh3.googleusercontent.com',
       'source.boringavatars.com',
       'files.stripe.com',
+      'api.dicebear.com',
     ],
   },
 };

@@ -7,15 +7,8 @@ export async function POST(req: Request, res: Response) {
   try {
     const body = await req.json();
 
-    const {
-      name,
-      email,
-      password,
-      phone,
-      doctorExperience,
-      doctorSpecialty,
-      doctorEducation,
-    } = body;
+    const { name, email, password, phone, doctorExperience, doctorSpecialty, doctorEducation } =
+      body;
 
     //! Check if all fields are filled
     if (
@@ -62,7 +55,10 @@ export async function POST(req: Request, res: Response) {
 
     if (validatedData.success) {
       //* Generate user image
-      const userImg = `https://source.boringavatars.com/marble/80/${validatedData.data.name}?colors=fdf4b0,a4dcb9,5bcebf,32b9be,2e97b7`;
+      // const userImg = `https://source.boringavatars.com/marble/80/${validatedData.data.name}?colors=fdf4b0,a4dcb9,5bcebf,32b9be,2e97b7`;
+      const firstName = validatedData.data.name.split(' ')[0];
+      const lastName = validatedData.data.name.split(' ')[1];
+      const userImg = `https://api.dicebear.com/7.x/lorelei/png?seed=${firstName}${lastName}`;
 
       const user = await prisma.user.create({
         data: {
@@ -106,7 +102,7 @@ export async function POST(req: Request, res: Response) {
     }
   } catch (error) {
     return NextResponse.json(
-      { message: 'Something went wrong' },
+      { message: 'Something went wrong', error },
       {
         status: 500,
       }
