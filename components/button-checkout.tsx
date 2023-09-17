@@ -5,10 +5,16 @@ import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface ButtonCheckoutProps extends React.HTMLAttributes<HTMLButtonElement> {
+  text: string;
   priceId: string;
 }
 
-export default function ButtonCheckout({ className, priceId, ...props }: ButtonCheckoutProps) {
+export default function ButtonCheckout({
+  className,
+  text,
+  priceId,
+  ...props
+}: ButtonCheckoutProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const createCheckout = async () => {
@@ -36,7 +42,7 @@ export default function ButtonCheckout({ className, priceId, ...props }: ButtonC
       }}
       {...props}
     >
-      Make an appointment
+      {text}
       {isLoading && <Loader2 className='ml-2 h-5 w-5 animate-spin' />}
     </Button>
   );

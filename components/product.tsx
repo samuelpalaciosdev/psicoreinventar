@@ -24,7 +24,7 @@ export default function Product({
           {unit_amount !== null ? formatPrice(unit_amount) : 'N/A'}
         </p>
         <p className='text-sm text-gray-500'>{time}</p>
-        <ButtonCheckout className='mt-4' priceId={default_price} />
+        <ButtonCheckout className='mt-4' priceId={default_price} text='Make an appointment' />
       </CardContent>
     </Card>
   );

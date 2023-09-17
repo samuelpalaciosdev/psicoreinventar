@@ -10,8 +10,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppointmentStore } from '@/context/store';
-import { getDoctor } from '@/utilities/users';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { ProductType } from '@/types/product-type';
+import getProducts from '@/utilities/get-products';
+import ButtonCheckout from './button-checkout';
 
 type DialogSelectDoctorProps = {
   doctorId: string;
@@ -21,6 +23,16 @@ type DialogSelectDoctorProps = {
 export default function DialogSelectDoctor({ doctorId, doctorName }: DialogSelectDoctorProps) {
   const setDoctor = useAppointmentStore((state) => state.setDoctor);
   const selectedDoctorName = useAppointmentStore((state) => state.selectedDoctorName);
+
+  const [products, setProducts] = useState<ProductType[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const products = await getProducts();
+      setProducts(products);
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <Dialog>
@@ -36,17 +48,12 @@ export default function DialogSelectDoctor({ doctorId, doctorName }: DialogSelec
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Confirm appointment with {selectedDoctorName}</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogDescription>Please confirm the details for the appointment</DialogDescription>
         </DialogHeader>
         <div className='grid gap-4 py-4'>
-          {/* <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='name' className='text-right'>
-              Name
-            </Label>
-            <Input id='name' value='Pedro Duarte' className='col-span-3' />
-          </div> */}
+          {products.map((product) => (
+            <p>option</p>
+          ))}
         </div>
         <DialogFooter>
           <Button type='submit'>Save changes</Button>
