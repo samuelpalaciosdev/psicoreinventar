@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import DialogSelectDoctor from './dialog-select-doctor';
+import DialogAppointment from './appointment/dialog-appointment';
 
 type DoctorCardProps = {
   id: string;
@@ -33,7 +33,7 @@ export default function DoctorCard({
         <p className='text-muted-foreground text-sm'>{doctorExperience}</p>
         <p className='text-muted-foreground text-sm'>{doctorEducation}</p>
         <div className='flex'>
-          <DialogSelectDoctor doctorId={id} doctorName={name} />
+          <DialogAppointment doctorId={id} doctorName={name} />
         </div>
       </CardContent>
     </Card>

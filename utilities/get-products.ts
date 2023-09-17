@@ -36,5 +36,5 @@ export default async function getProducts() {
     )
     .map((result) => result.value);
 
-  return productsWithPrices;
+  return productsWithPrices.reverse();
 }

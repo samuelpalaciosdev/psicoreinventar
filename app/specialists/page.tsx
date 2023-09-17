@@ -3,7 +3,7 @@ import { getDoctors } from '@/utilities/users';
 
 export default async function SpecialistsPage() {
   const doctors = await getDoctors();
-  console.log(doctors);
+  // console.log(doctors);
 
   return (
     <div className='container max-w-7xl flex flex-col gap-4'>

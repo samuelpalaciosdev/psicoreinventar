@@ -5,11 +5,13 @@ import { persist } from 'zustand/middleware';
 interface AppointmentState {
   doctorSelected: string;
   selectedDoctorName: string;
-  selectedDateTime: string;
+  dateTimeSelected: string;
   patientSelected: string;
+  productSelected: string;
   setDoctor: (doctorId: string, doctorName: string) => void;
   setDateTime: (date: string) => void;
   setPatient: (patient: string) => void;
+  setProduct: (product: string) => void;
 }
 
 export const useAppointmentStore = create(
@@ -17,12 +19,14 @@ export const useAppointmentStore = create(
     (set) => ({
       doctorSelected: '',
       selectedDoctorName: '',
-      selectedDateTime: '',
+      dateTimeSelected: '',
       patientSelected: '',
+      productSelected: 'Individual therapy', // Default product
       setDoctor: (doctorId: string, doctorName: string) =>
         set((state) => ({ doctorSelected: doctorId, selectedDoctorName: doctorName })),
-      setDateTime: (date: string) => set((state) => ({ selectedDateTime: date })),
+      setDateTime: (date: string) => set((state) => ({ dateTimeSelected: date })),
       setPatient: (patient: string) => set((state) => ({ patientSelected: patient })),
+      setProduct: (product: string) => set((state) => ({ productSelected: product })),
     }),
     {
       name: 'appointment-storage',
