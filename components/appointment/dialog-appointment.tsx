@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import DialogAppointmentTrigger from './dialog-appointment-trigger';
 import getProducts from '@/utilities/get-products';
 import DialogAppointmentButton from './dialog-appointment-button';
+import DateTimePickerAppointment from './datetime-picker';
 
 type DialogAppointmentProps = {
   doctorId: string;
@@ -21,7 +22,7 @@ export default async function DialogAppointment({ doctorId, doctorName }: Dialog
   return (
     <Dialog>
       <DialogAppointmentTrigger doctorId={doctorId} doctorName={doctorName} />
-      <DialogContent>
+      <DialogContent className='h-fit py-12'>
         <DialogHeader>
           <DialogTitle>Confirm appointment with Dr {doctorName}</DialogTitle>
           <DialogDescription>
@@ -36,8 +37,8 @@ export default async function DialogAppointment({ doctorId, doctorName }: Dialog
               <DialogAppointmentButton key={product.id} productName={product.name!} />
             ))}
           </div>
-
           {/* Date and time picker */}
+          <DateTimePickerAppointment />
         </div>
       </DialogContent>
     </Dialog>
