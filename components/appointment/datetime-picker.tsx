@@ -5,8 +5,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import { useAppointmentStore } from '@/context/store';
 
 export default function DateTimePickerAppointment() {
+  const setDateTime = useAppointmentStore((state) => state.setDateTime);
+
   const today = dayjs();
   const oneWeek = dayjs().add(7, 'day');
 
@@ -41,6 +44,7 @@ export default function DateTimePickerAppointment() {
         onChange={(newValue) => {
           setValue(newValue);
           setFormattedValue(formatDateTime(newValue!));
+          setDateTime(formattedValue);
         }}
         minDate={today}
         maxDate={oneWeek}
