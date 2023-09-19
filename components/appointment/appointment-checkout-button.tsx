@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useAppointmentStore } from '@/context/store';
 
 interface ButtonCheckoutProps extends React.HTMLAttributes<HTMLButtonElement> {
@@ -14,7 +15,19 @@ export default function AppointmentCheckoutButton({
   text,
   ...props
 }: ButtonCheckoutProps) {
-  const priceId = useAppointmentStore((state) => state.productPriceId);
+  const { data: session, status } = useSession();
+
+  const appointmentData = useAppointmentStore((state) => ({
+    dateTime: state.dateTimeSelected,
+    doctorId: state.doctorSelected,
+    product: state.productSelected,
+    stripeProductId: state.productId,
+    priceId: state.productPriceId,
+  }));
+
+  const { dateTime, doctorId, product, stripeProductId, priceId } = appointmentData;
+  const patientId = session?.user?.stripeCustomerId;
+  // const priceId = useAppointmentStore((state) => state.productPriceId);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const createCheckout = async () => {
@@ -25,7 +38,7 @@ export default function AppointmentCheckoutButton({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ priceId }),
+      body: JSON.stringify({ dateTime, doctorId, product, stripeProductId, priceId, patientId }),
     });
 
     const data = await response.json(); // Receive checkout session url

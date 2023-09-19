@@ -37,6 +37,7 @@ export default async function DialogAppointment({ doctorId, doctorName }: Dialog
             {products.map((product) => (
               <DialogAppointmentButton
                 key={product.id}
+                productId={product.id!}
                 productName={product.name!}
                 priceId={product.default_price}
               />

@@ -19,10 +19,18 @@ export async function POST(req: Request, res: Response) {
 
     const body = await req.json();
 
-    const { priceId } = body;
+    const { dateTime, doctorId, product, stripeProductId, priceId, patientId } = body;
 
-    if (!priceId) {
-      return NextResponse.json({ message: 'Price ID is required' }, { status: 400 });
+    //! Check if all fields are filled
+    if (!dateTime || !doctorId || !product || !stripeProductId || !priceId || !patientId) {
+      return NextResponse.json(
+        {
+          message: 'Please provide all fields',
+        },
+        {
+          status: 400,
+        }
+      );
     }
 
     // Create a Checkout Session.
@@ -32,7 +40,7 @@ export async function POST(req: Request, res: Response) {
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: session.user.email as string,
       metadata: {
-        userId: session.user.id, //! This should be the stripeCustomerId
+        userId: session.user.stripeCustomerId,
       },
       success_url: `http://localhost:3000/success`,
       cancel_url: `http://localhost:3000`,

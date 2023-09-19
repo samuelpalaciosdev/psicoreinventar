@@ -8,11 +8,13 @@ interface AppointmentState {
   dateTimeSelected: string;
   patientSelected: string;
   productSelected: string;
+  productId: string;
   productPriceId: string;
   setDoctor: (doctorId: string, doctorName: string) => void;
   setDateTime: (date: string) => void;
   setPatient: (patient: string) => void;
   setProduct: (product: string) => void;
+  setProductId: (productId: string) => void;
   setProductPriceId: (priceId: string) => void;
 }
 
@@ -24,12 +26,14 @@ export const useAppointmentStore = create(
       dateTimeSelected: '',
       patientSelected: '',
       productSelected: 'Individual therapy', // Default product
+      productId: '',
       productPriceId: '',
       setDoctor: (doctorId: string, doctorName: string) =>
         set((state) => ({ doctorSelected: doctorId, selectedDoctorName: doctorName })),
       setDateTime: (date: string) => set((state) => ({ dateTimeSelected: date })),
       setPatient: (patient: string) => set((state) => ({ patientSelected: patient })),
       setProduct: (product: string) => set((state) => ({ productSelected: product })),
+      setProductId: (productId: string) => set((state) => ({ productId: productId })),
       setProductPriceId: (priceId: string) => set((state) => ({ productPriceId: priceId })),
     }),
     {

@@ -9,6 +9,7 @@ declare module 'next-auth' {
     user: User & {
       id: UserId;
       role: Role;
+      stripeCustomerId: string;
     };
   }
 }
@@ -17,5 +18,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: UserId;
     role: Role;
+    stripeCustomerId: string;
   }
 }

@@ -4,6 +4,9 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from './db';
 import bcrypt from 'bcrypt';
+import { stripe } from './stripe';
+import type { Session } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -57,10 +60,32 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           image: user.image,
           role: user.role,
+          stripeCustomerId: user.stripeCustomerId,
         };
       },
     }),
   ],
+  events: {
+    createUser: async ({ user }) => {
+      // Create a customer for them in Stripe
+      if (user.name && user.email) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          name: user.name,
+        });
+
+        // Update our prisma user with the stripe customer id
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            stripeCustomerId: customer.id,
+          },
+        });
+      }
+    },
+  },
   callbacks: {
     async session({ session, token }) {
       if (token) {
@@ -69,8 +94,9 @@ export const authOptions: NextAuthOptions = {
         session.user.image = token.picture;
         session.user.role = token.role;
         session.user.id = token.id;
+        session.user.stripeCustomerId = token.stripeCustomerId;
       }
-      return session;
+      return session as Session;
     },
     async jwt({ token, user, account }) {
       // if (account?.provider === 'google' && user)
@@ -94,7 +120,8 @@ export const authOptions: NextAuthOptions = {
         email: dbUser.email,
         picture: dbUser.image,
         role: dbUser.role,
-      };
+        stripeCustomerId: dbUser.stripeCustomerId,
+      } as JWT;
     },
   },
 };
