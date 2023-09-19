@@ -2,14 +2,15 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import DialogAppointmentTrigger from './dialog-appointment-trigger';
 import getProducts from '@/utilities/get-products';
 import DialogAppointmentButton from './dialog-appointment-button';
 import DateTimePickerAppointment from './datetime-picker';
+import AppointmentSubmitButton from './appointment-checkout-button';
 
 type DialogAppointmentProps = {
   doctorId: string;
@@ -22,7 +23,7 @@ export default async function DialogAppointment({ doctorId, doctorName }: Dialog
   return (
     <Dialog>
       <DialogAppointmentTrigger doctorId={doctorId} doctorName={doctorName} />
-      <DialogContent className='h-fit py-12'>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Confirm appointment with Dr {doctorName}</DialogTitle>
           <DialogDescription>
@@ -34,12 +35,19 @@ export default async function DialogAppointment({ doctorId, doctorName }: Dialog
           <p className='text-sm text-muted-foreground'> Type of appointment:</p>
           <div className='flex gap-4 items-center'>
             {products.map((product) => (
-              <DialogAppointmentButton key={product.id} productName={product.name!} />
+              <DialogAppointmentButton
+                key={product.id}
+                productName={product.name!}
+                priceId={product.default_price}
+              />
             ))}
           </div>
           {/* Date and time picker */}
           <DateTimePickerAppointment />
         </div>
+        <DialogFooter>
+          <AppointmentSubmitButton text='Make an appointment' />
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

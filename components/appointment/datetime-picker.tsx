@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -28,14 +28,28 @@ export default function DateTimePickerAppointment() {
   };
 
   const [value, setValue] = useState<Dayjs | null>(eightAm);
+  const [minTime, setMinTime] = useState<Dayjs>(eightAm);
   const [formattedValue, setFormattedValue] = useState<string>(
     formatDateTime(eightAm) // Initialize with formatted initial value
   );
-  // console.log(formattedValue);
+
+  useEffect(() => {
+    setDateTime(formatDateTime(minTime!)); // Initial datetime value on store
+    // Update minTime dynamically based on the current time
+    const currentHour = dayjs().hour();
+    if (currentHour >= 8) {
+      // If current hour is 8 AM or later, set minTime to the current hour
+      setMinTime(dayjs().startOf('hour').hour(currentHour));
+    } else {
+      // If current hour is earlier than 8 AM, set minTime to 8 AM
+      setMinTime(eightAm);
+    }
+  }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
+        label='Date and time of appointment'
         className='self-start'
         viewRenderers={{
           hours: renderTimeViewClock,
@@ -43,13 +57,13 @@ export default function DateTimePickerAppointment() {
         value={value}
         onChange={(newValue) => {
           setValue(newValue);
-          setFormattedValue(formatDateTime(newValue!));
+          const formattedValue = formatDateTime(newValue!);
           setDateTime(formattedValue);
         }}
         minDate={today}
         maxDate={oneWeek}
         shouldDisableDate={isWeekend}
-        minTime={eightAm}
+        minTime={minTime}
         maxTime={fivePm}
         minutesStep={60}
         slotProps={{

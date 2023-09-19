@@ -1,23 +1,29 @@
 'use client';
 
-import { ProductType } from '@/types/product-type';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
 import { useAppointmentStore } from '@/context/store';
 
 type DialogAppointmentButtonProps = {
   productName: string;
+  priceId: string;
 };
 
-export default function DialogAppointmentButton({ productName }: DialogAppointmentButtonProps) {
+export default function DialogAppointmentButton({
+  productName,
+  priceId,
+}: DialogAppointmentButtonProps) {
   const productSelected = useAppointmentStore((state) => state.productSelected);
   const setProduct = useAppointmentStore((state) => state.setProduct);
+  const setProductPriceId = useAppointmentStore((state) => state.setProductPriceId);
+
+  const handleClick = () => {
+    setProductPriceId(priceId);
+    setProduct(productName);
+  };
 
   return (
     <Button
-      onClick={() => {
-        setProduct(productName);
-      }}
+      onClick={handleClick}
       variant={productSelected === productName ? 'default' : 'secondary'}
     >
       {productName}

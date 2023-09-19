@@ -1,20 +1,20 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { useAppointmentStore } from '@/context/store';
 
 interface ButtonCheckoutProps extends React.HTMLAttributes<HTMLButtonElement> {
   text: string;
-  priceId: string;
 }
 
-export default function ButtonCheckout({
+export default function AppointmentCheckoutButton({
   className,
   text,
-  priceId,
   ...props
 }: ButtonCheckoutProps) {
+  const priceId = useAppointmentStore((state) => state.productPriceId);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const createCheckout = async () => {
@@ -34,7 +34,7 @@ export default function ButtonCheckout({
 
   return (
     <Button
-      className={cn(className, 'w-full')}
+      className={cn(className)}
       disabled={isLoading}
       onClick={() => {
         createCheckout();
