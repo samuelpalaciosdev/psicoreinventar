@@ -29,6 +29,7 @@ export default function AppointmentCheckoutButton({
   const patientId = session?.user?.stripeCustomerId;
   // const priceId = useAppointmentStore((state) => state.productPriceId);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const appointmentStatus = 'pending';
 
   const createCheckout = async () => {
     setIsLoading(!isLoading);
@@ -38,7 +39,15 @@ export default function AppointmentCheckoutButton({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ dateTime, doctorId, product, stripeProductId, priceId, patientId }),
+      body: JSON.stringify({
+        status: appointmentStatus,
+        dateTime,
+        doctorId,
+        product,
+        stripeProductId,
+        priceId,
+        patientId,
+      }),
     });
 
     const data = await response.json(); // Receive checkout session url

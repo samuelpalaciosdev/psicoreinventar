@@ -1,6 +1,7 @@
 import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
+import { AppointmentSchema } from '@/lib/validations/appointment';
 
 export async function POST(req: Request, res: Response) {
   try {
@@ -19,10 +20,18 @@ export async function POST(req: Request, res: Response) {
 
     const body = await req.json();
 
-    const { dateTime, doctorId, product, stripeProductId, priceId, patientId } = body;
+    const { status, dateTime, doctorId, product, stripeProductId, priceId, patientId } = body;
 
     //! Check if all fields are filled
-    if (!dateTime || !doctorId || !product || !stripeProductId || !priceId || !patientId) {
+    if (
+      !status ||
+      !dateTime ||
+      !doctorId ||
+      !product ||
+      !stripeProductId ||
+      !priceId ||
+      !patientId
+    ) {
       return NextResponse.json(
         {
           message: 'Please provide all fields',
@@ -33,30 +42,43 @@ export async function POST(req: Request, res: Response) {
       );
     }
 
-    // Create a Checkout Session.
-    const stripeSession = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
-      customer_email: session.user.email as string,
-      metadata: {
-        userId: session.user.stripeCustomerId,
-      },
-      success_url: `http://localhost:3000/success`,
-      cancel_url: `http://localhost:3000`,
-    });
+    const validatedData = AppointmentSchema.safeParse(body);
 
-    // console.log(stripeSession);
+    if (validatedData.success) {
+      // Create a Checkout Session.
+      const stripeSession = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card'],
+        line_items: [{ price: validatedData.data.priceId, quantity: 1 }],
+        customer_email: session.user.email as string,
+        metadata: {
+          userId: session.user.stripeCustomerId,
+        },
+        success_url: `http://localhost:3000/success`,
+        cancel_url: `http://localhost:3000`,
+      });
 
-    return NextResponse.json(
-      {
-        message: 'Checkout created',
-        url: stripeSession.url,
-      },
-      {
-        status: 201,
-      }
-    );
+      // console.log(stripeSession);
+
+      return NextResponse.json(
+        {
+          message: 'Checkout created',
+          url: stripeSession.url,
+        },
+        {
+          status: 201,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          message: 'Please provide valid data',
+        },
+        {
+          status: 400,
+        }
+      );
+    }
   } catch (error) {
     return NextResponse.json(
       {
