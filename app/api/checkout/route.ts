@@ -2,6 +2,7 @@ import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { AppointmentSchema } from '@/lib/validations/appointment';
+import prisma from '@/lib/db';
 
 export async function POST(req: Request, res: Response) {
   try {
@@ -20,18 +21,10 @@ export async function POST(req: Request, res: Response) {
 
     const body = await req.json();
 
-    const { status, dateTime, doctorId, product, stripeProductId, priceId, patientId } = body;
+    const { status, dateTime, doctorId, patientId, stripeProductId, priceId } = body;
 
     //! Check if all fields are filled
-    if (
-      !status ||
-      !dateTime ||
-      !doctorId ||
-      !product ||
-      !stripeProductId ||
-      !priceId ||
-      !patientId
-    ) {
+    if (!status || !dateTime || !doctorId || !patientId || !stripeProductId || !priceId) {
       return NextResponse.json(
         {
           message: 'Please provide all fields',
@@ -45,14 +38,29 @@ export async function POST(req: Request, res: Response) {
     const validatedData = AppointmentSchema.safeParse(body);
 
     if (validatedData.success) {
-      // Create a Checkout Session.
+      //* Create an appointment on the db
+
+      const appointment = await prisma.appointment.create({
+        data: {
+          status: validatedData.data.status,
+          dateTime: validatedData.data.dateTime,
+          doctorId: validatedData.data.doctorId,
+          patientId: session.user.id,
+          stripePriceId: validatedData.data.priceId,
+          productId: validatedData.data.stripeProductId, // Stripe product id
+        },
+      });
+
+      //* Create a Stripe checkout Session.
       const stripeSession = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
         line_items: [{ price: validatedData.data.priceId, quantity: 1 }],
         customer_email: session.user.email as string,
         metadata: {
-          userId: session.user.stripeCustomerId,
+          patientId: session.user.stripeCustomerId,
+          doctorId: validatedData.data.doctorId,
+          dateTime: validatedData.data.dateTime,
         },
         success_url: `http://localhost:3000/success`,
         cancel_url: `http://localhost:3000`,

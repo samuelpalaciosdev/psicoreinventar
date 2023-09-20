@@ -27,9 +27,9 @@ export default function AppointmentCheckoutButton({
 
   const { dateTime, doctorId, product, stripeProductId, priceId } = appointmentData;
   const patientId = session?.user?.stripeCustomerId;
+  const appointmentStatus = 'pending';
   // const priceId = useAppointmentStore((state) => state.productPriceId);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const appointmentStatus = 'pending';
 
   const createCheckout = async () => {
     setIsLoading(!isLoading);
@@ -43,10 +43,9 @@ export default function AppointmentCheckoutButton({
         status: appointmentStatus,
         dateTime,
         doctorId,
-        product,
+        patientId,
         stripeProductId,
         priceId,
-        patientId,
       }),
     });
 

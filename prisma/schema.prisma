@@ -65,14 +65,31 @@ model User {
 }
 
 model Product {
-  id              String  @id
-  name            String  @unique
+  stripeProductId String        @id
+  name            String        @unique
   description     String
   price           Int
   image           String
   time            String
-  active          Boolean @default(true)
-  stripeProductId String?
+  active          Boolean       @default(true)
+  appointments    Appointment[]
+}
+
+enum AppointmentStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+model Appointment {
+  id            String            @id @default(cuid())
+  status        AppointmentStatus
+  dateTime      String
+  doctorId      String
+  patientId     String
+  stripePriceId String
+  productId     String // Stripe product id
+  product       Product           @relation(fields: [productId], references: [stripeProductId])
 }
 
 model VerificationToken {

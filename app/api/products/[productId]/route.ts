@@ -10,10 +10,7 @@ const routeContextSchema = z.object({
   }),
 });
 
-export async function DELETE(
-  req: Request,
-  context: z.infer<typeof routeContextSchema>
-) {
+export async function DELETE(req: Request, context: z.infer<typeof routeContextSchema>) {
   try {
     // Validate the route params (productId) base_url/api/products/productId
     const { params } = routeContextSchema.parse(context);
@@ -21,7 +18,7 @@ export async function DELETE(
     // Delete the product on the db
     await prisma.product.delete({
       where: {
-        id: params.productId as string,
+        stripeProductId: params.productId as string,
       },
     });
 
@@ -40,10 +37,7 @@ export async function DELETE(
   }
 }
 
-export async function PATCH(
-  req: Request,
-  context: z.infer<typeof routeContextSchema>
-) {
+export async function PATCH(req: Request, context: z.infer<typeof routeContextSchema>) {
   try {
     // Validate the route params (productId) base_url/api/products/productId
     const { params } = routeContextSchema.parse(context);
@@ -56,24 +50,21 @@ export async function PATCH(
     // Update the product on the db
     const product = await prisma.product.update({
       where: {
-        id: params.productId as string,
+        stripeProductId: params.productId as string,
       },
       data: validatedData,
     });
 
     //* Update product on stripe
-    const updatedStripeProduct = await stripe.products.update(
-      params.productId,
-      {
-        name: validatedData.name,
-        description: validatedData.description,
-        images: validatedData.images,
-        metadata: {
-          time: validatedData.time!,
-        },
-        active: validatedData.active,
-      }
-    );
+    const updatedStripeProduct = await stripe.products.update(params.productId, {
+      name: validatedData.name,
+      description: validatedData.description,
+      images: validatedData.images,
+      metadata: {
+        time: validatedData.time!,
+      },
+      active: validatedData.active,
+    });
 
     //* Update product price on stripe (it cant be changed directly so achieve the old price and create a new one)
     if (validatedData.price) {
@@ -84,12 +75,9 @@ export async function PATCH(
       });
 
       // Change default_price to the new price and archive the old one
-      const updateProductPrice = await stripe.products.update(
-        params.productId,
-        {
-          default_price: newPrice.id,
-        }
-      );
+      const updateProductPrice = await stripe.products.update(params.productId, {
+        default_price: newPrice.id,
+      });
 
       const achieveOldPrice = await stripe.prices.update(
         updatedStripeProduct.default_price as string,

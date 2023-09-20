@@ -47,13 +47,12 @@ export async function POST(req: Request, res: Response) {
       //* Now create a product in the db with prisma
       const newProduct = await prisma.product.create({
         data: {
-          id: product.id,
+          stripeProductId: product.id,
           name: validatedData.data.name,
           description: validatedData.data.description,
           image: validatedData.data.image,
           price: validatedData.data.price,
           time: validatedData.data.time,
-          stripeProductId: product.id,
         },
       });
 

@@ -33,18 +33,18 @@ export default function DateTimePickerAppointment() {
     formatDateTime(eightAm) // Initialize with formatted initial value
   );
 
-  useEffect(() => {
-    setDateTime(formatDateTime(minTime!)); // Initial datetime value on store
-    // Update minTime dynamically based on the current time
-    const currentHour = dayjs().hour();
-    if (currentHour >= 8) {
-      // If current hour is 8 AM or later, set minTime to the current hour
-      setMinTime(dayjs().startOf('hour').hour(currentHour));
-    } else {
-      // If current hour is earlier than 8 AM, set minTime to 8 AM
-      setMinTime(eightAm);
-    }
-  }, []);
+  // useEffect(() => {
+  //   setDateTime(formatDateTime(minTime!)); // Initial datetime value on store
+  //   // Update minTime dynamically based on the current time
+  //   const currentHour = dayjs().hour();
+  //   if (currentHour >= 8) {
+  //     // If current hour is 8 AM or later, set minTime to the current hour
+  //     setMinTime(dayjs().startOf('hour').hour(currentHour));
+  //   } else {
+  //     // If current hour is earlier than 8 AM, set minTime to 8 AM
+  //     setMinTime(eightAm);
+  //   }
+  // }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -63,7 +63,7 @@ export default function DateTimePickerAppointment() {
         minDate={today}
         maxDate={oneWeek}
         shouldDisableDate={isWeekend}
-        minTime={minTime}
+        minTime={eightAm}
         maxTime={fivePm}
         minutesStep={60}
         slotProps={{
