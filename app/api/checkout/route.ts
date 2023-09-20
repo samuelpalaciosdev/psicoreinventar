@@ -38,19 +38,6 @@ export async function POST(req: Request, res: Response) {
     const validatedData = AppointmentSchema.safeParse(body);
 
     if (validatedData.success) {
-      //* Create an appointment on the db
-
-      const appointment = await prisma.appointment.create({
-        data: {
-          status: validatedData.data.status,
-          dateTime: validatedData.data.dateTime,
-          doctorId: validatedData.data.doctorId,
-          patientId: session.user.id,
-          stripePriceId: validatedData.data.priceId,
-          productId: validatedData.data.stripeProductId, // Stripe product id
-        },
-      });
-
       //* Create a Stripe checkout Session.
       const stripeSession = await stripe.checkout.sessions.create({
         mode: 'payment',
@@ -58,9 +45,11 @@ export async function POST(req: Request, res: Response) {
         line_items: [{ price: validatedData.data.priceId, quantity: 1 }],
         customer_email: session.user.email as string,
         metadata: {
-          patientId: session.user.stripeCustomerId,
-          doctorId: validatedData.data.doctorId,
           dateTime: validatedData.data.dateTime,
+          doctorId: validatedData.data.doctorId,
+          patientId: session.user.stripeCustomerId,
+          stripePriceId: validatedData.data.priceId,
+          productId: validatedData.data.stripeProductId, // Stripe product id
         },
         success_url: `http://localhost:3000/success`,
         cancel_url: `http://localhost:3000`,
