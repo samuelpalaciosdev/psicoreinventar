@@ -44,16 +44,16 @@ enum Role {
 }
 
 model User {
-  id                   String    @id @default(cuid())
+  id                   String        @id @default(cuid())
   name                 String?
-  email                String?   @unique
+  email                String?       @unique
   emailVerified        DateTime?
   password             String?
   image                String?
-  role                 Role      @default(patient)
-  isActive             Boolean   @default(true)
-  phone                String?   @unique
-  stripeCustomerId     String?   @unique
+  role                 Role          @default(patient)
+  isActive             Boolean       @default(true)
+  phone                String?       @unique
+  stripeCustomerId     String?       @unique
   stripeSubscriptionId String?
   // doctor role
   doctorExperience     String?
@@ -62,6 +62,8 @@ model User {
   // Relationships
   accounts             Account[]
   sessions             Session[]
+  doctorAppointments   Appointment[] @relation("doctorAppointments")
+  patientAppointments  Appointment[] @relation("patientAppointments")
 }
 
 model Product {
@@ -90,6 +92,8 @@ model Appointment {
   stripePriceId String
   productId     String // Stripe product id
   product       Product           @relation(fields: [productId], references: [stripeProductId])
+  doctor        User              @relation("doctorAppointments", fields: [doctorId], references: [id])
+  patient       User              @relation("patientAppointments", fields: [patientId], references: [stripeCustomerId])
 }
 
 model VerificationToken {

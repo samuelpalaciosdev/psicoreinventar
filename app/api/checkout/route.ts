@@ -47,7 +47,7 @@ export async function POST(req: Request, res: Response) {
         metadata: {
           dateTime: validatedData.data.dateTime,
           doctorId: validatedData.data.doctorId,
-          patientId: session.user.stripeCustomerId,
+          patientId: session.user.stripeCustomerId, // Stripe customer id
           stripePriceId: validatedData.data.priceId,
           productId: validatedData.data.stripeProductId, // Stripe product id
         },
